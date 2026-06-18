@@ -337,7 +337,7 @@ async function previewPDF(){const data=getFormData();if(!data.address){toast('Pl
 async function exportPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();doc.save(`septic_${addr}.pdf`)}
 async function emailReport(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const addr=currentReport.address||'';const d=currentReport.date?new Date(currentReport.date+'T00:00:00').toLocaleDateString('en-AU'):'';const sub=encodeURIComponent(`Septic Inspection Report — ${addr}`);const bod=encodeURIComponent(`Please find attached the septic inspection report for ${addr} dated ${d}.\n\nRegards,\n${s.inspector||s.bizName||''}`);window.location.href=`mailto:?subject=${sub}&body=${bod}`}
 
-async function init(){await openDB();document.getElementById('f-date').value=today();const s=await getSettings();if(s.bizName)document.getElementById('biz-nav-name').textContent=s.bizName;if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})}
+async function init(){await openDB();document.getElementById('f-date').value=today();const s=await getSettings();if(s.bizName)document.getElementById('biz-nav-name').textContent=s.bizName}
 init();
 </script>
 </body>
