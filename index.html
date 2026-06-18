@@ -107,6 +107,24 @@
   .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;opacity:0;transition:all 0.3s;z-index:200;white-space:nowrap}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  .home-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:#f5f5f2}
+  .home-logo{width:72px;height:72px;background:#1a1a18;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+  .home-logo svg{opacity:0.9}
+  .home-title{font-size:22px;font-weight:500;color:#1a1a18;text-align:center;margin-bottom:6px}
+  .home-sub{font-size:14px;color:#888;text-align:center;margin-bottom:48px}
+  .home-actions{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
+  .home-btn{width:100%;padding:18px 24px;border-radius:12px;font-size:16px;font-weight:500;cursor:pointer;border:none;font-family:inherit;display:flex;align-items:center;gap:14px;transition:opacity 0.15s}
+  .home-btn:active{opacity:0.8}
+  .home-btn-primary{background:#1a1a18;color:#fff}
+  .home-btn-secondary{background:#fff;color:#1a1a18;border:0.5px solid rgba(0,0,0,0.15)}
+  .home-btn svg{flex-shrink:0;opacity:0.7}
+  .home-btn span{flex:1;text-align:left}
+  .home-btn-arrow{opacity:0.4;margin-left:auto}
+  .success-overlay{display:none;position:fixed;inset:0;background:#fff;z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+  .success-overlay.show{display:flex}
+  .success-tick{width:80px;height:80px;background:#eaf3de;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .success-title{font-size:20px;font-weight:500;color:#1a1a18}
+  .success-sub{font-size:14px;color:#888}
   @media(max-width:500px){
     .field-row{grid-template-columns:1fr}
     .fixture-grid{grid-template-columns:repeat(3,1fr)}
@@ -120,17 +138,44 @@
 <body>
 <div class="app">
 
-<nav class="nav">
-  <div class="nav-brand">Septic Inspection<span id="biz-nav-name">Northern Rivers Septic Solutions</span></div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showScreen('form')">New</button>
-    <button class="nav-tab" onclick="showScreen('history')">History</button>
-    <button class="nav-tab" onclick="showScreen('settings')">Settings</button>
-  </div>
+<nav class="nav" id="main-nav" style="display:none">
+  <button onclick="showScreen('home')" style="padding:14px 16px;background:none;border:none;cursor:pointer;color:#888;font-size:13px;font-family:inherit;display:flex;align-items:center;gap:6px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Home
+  </button>
+  <div class="nav-brand" style="flex:1;text-align:center;padding:14px 0"><span id="biz-nav-name" style="font-size:13px;font-weight:500;color:#1a1a18;display:block">Northern Rivers Septic Solutions</span></div>
+  <div style="width:80px"></div>
 </nav>
 
 <!-- NEW REPORT -->
-<div id="screen-form" class="screen active">
+<div id="screen-home" class="home-screen active">
+  <div class="home-logo">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9,22 9,12 15,12 15,22"/>
+    </svg>
+  </div>
+  <div class="home-title">Northern Rivers<br>Septic Solutions</div>
+  <div class="home-sub">Inspection Reports</div>
+  <div class="home-actions">
+    <button class="home-btn home-btn-primary" onclick="showScreen('form')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      <span>New inspection</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+    <button class="home-btn home-btn-secondary" onclick="showScreen('history')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      <span>Past inspections</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+    <button class="home-btn home-btn-secondary" onclick="showScreen('settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+  </div>
+</div>
+
+<div id="screen-form" class="screen">
 
   <div class="card">
     <div class="card-title">Inspection details</div>
@@ -173,12 +218,12 @@
   <div class="card">
     <div class="card-title">Fixtures serviced</div>
     <div class="fixture-grid">
-      <div class="fixture-item"><label>Bedrooms</label><input type="number" id="f-beds" min="0" value="0"></div>
-      <div class="fixture-item"><label>Showers</label><input type="number" id="f-showers" min="0" value="0"></div>
-      <div class="fixture-item"><label>WCs</label><input type="number" id="f-wcs" min="0" value="0"></div>
-      <div class="fixture-item"><label>Basins</label><input type="number" id="f-basins" min="0" value="0"></div>
-      <div class="fixture-item"><label>Laundry</label><input type="number" id="f-laundry" min="0" value="0"></div>
-      <div class="fixture-item"><label>Kitchen sinks</label><input type="number" id="f-kitchen" min="0" value="0"></div>
+      <div class="fixture-item"><label>Bedrooms</label><input type="number" id="f-beds" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>Showers</label><input type="number" id="f-showers" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>WCs</label><input type="number" id="f-wcs" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>Basins</label><input type="number" id="f-basins" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>Laundry</label><input type="number" id="f-laundry" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>Kitchen sinks</label><input type="number" id="f-kitchen" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
     </div>
   </div>
 
@@ -250,12 +295,18 @@
     <h2 id="modal-title">Inspection report</h2>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-actions">
-      <button class="btn btn-danger" onclick="deleteReport()">Delete</button><button class="btn" onclick="editReport()">Edit</button>
+      <button class="btn btn-danger" onclick="deleteReport()">Delete</button><button class="btn" onclick="editReport()">Edit</button><button class="btn" onclick="previewSavedPDF()">Preview PDF</button>
       <button class="btn" onclick="emailReport()">Email PDF</button>
       <button class="btn btn-primary" onclick="exportPDF()">Download PDF</button>
       <button class="btn" onclick="closeModal()">Close</button>
     </div>
   </div>
+</div>
+
+<div class="success-overlay" id="success-overlay">
+  <div class="success-tick"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b6d11" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg></div>
+  <div class="success-title">Report saved</div>
+  <div class="success-sub">Added to your inspection history</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -270,7 +321,7 @@ function dbGet(s,k){return new Promise((res,rej)=>{const tx=db.transaction(s,'re
 function dbGetAll(s){return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).getAll();r.onsuccess=()=>res(r.result);r.onerror=rej})}
 function dbDelete(s,k){return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');const r=tx.objectStore(s).delete(k);r.onsuccess=res;r.onerror=rej})}
 
-function showScreen(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('screen-'+name).classList.add('active');const idx=['form','history','settings'].indexOf(name);document.querySelectorAll('.nav-tab')[idx].classList.add('active');if(name==='history')loadHistory();if(name==='settings')loadSettingsUI();window.scrollTo(0,0)}
+function showScreen(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+name).classList.add('active');const nav=document.getElementById('main-nav');nav.style.display=name==='home'?'none':'flex';if(name==='history')loadHistory();if(name==='settings')loadSettingsUI();window.scrollTo(0,0)}
 
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 
@@ -283,9 +334,9 @@ function removePhoto(i){currentPhotos.splice(i,1);renderPhotoGrid()}
 function getFormData(){return{date:document.getElementById('f-date').value,address:document.getElementById('f-address').value,weather:weatherSelected.join(', '),tankType:document.getElementById('f-tanktype').value,tankSize:document.getElementById('f-tanksize').value,boundary:document.getElementById('f-boundary').value,tankLocation:document.getElementById('f-tankloc').value,beds:document.getElementById('f-beds').value,showers:document.getElementById('f-showers').value,wcs:document.getElementById('f-wcs').value,basins:document.getElementById('f-basins').value,laundry:document.getElementById('f-laundry').value,kitchen:document.getElementById('f-kitchen').value,tankNotes:document.getElementById('f-tank-notes').value,trenchNotes:document.getElementById('f-trench-notes').value,repairs:document.getElementById('f-repairs').value,wastewater:document.getElementById('f-wastewater').checked,photos:currentPhotos.map(p=>({dataUrl:p.dataUrl,caption:p.caption}))}}
 
 let editingId=null;
-async function saveReport(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();if(editingId){await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString(),id:editingId});toast('Report updated.');editingId=null;document.querySelector('.nav-tab').textContent='New';}else{await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString()});toast('Report saved.');}clearForm()}
+async function saveReport(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();if(editingId){await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString(),id:editingId});showSuccess(true);editingId=null;}else{await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString()});showSuccess();}clearForm()}
 
-function clearForm(){editingId=null;document.querySelector('.nav-tab').textContent='New';document.getElementById('f-date').value=today();document.getElementById('f-address').value='';weatherSelected=[];document.querySelectorAll('#weather-chips .chip').forEach(c=>c.classList.remove('selected'));document.getElementById('f-tanktype').value='';document.getElementById('f-tanksize').value='';document.getElementById('f-boundary').value='';document.getElementById('f-tankloc').value='';['beds','showers','wcs','basins','laundry','kitchen'].forEach(f=>document.getElementById('f-'+f).value='0');['f-tank-notes','f-trench-notes','f-repairs'].forEach(f=>document.getElementById(f).value='');document.getElementById('f-wastewater').checked=true;currentPhotos=[];renderPhotoGrid();window.scrollTo(0,0)}
+function clearForm(){editingId=null;document.getElementById('f-date').value=today();document.getElementById('f-address').value='';weatherSelected=[];document.querySelectorAll('#weather-chips .chip').forEach(c=>c.classList.remove('selected'));document.getElementById('f-tanktype').value='';document.getElementById('f-tanksize').value='';document.getElementById('f-boundary').value='';document.getElementById('f-tankloc').value='';['beds','showers','wcs','basins','laundry','kitchen'].forEach(f=>document.getElementById('f-'+f).value='0');['f-tank-notes','f-trench-notes','f-repairs'].forEach(f=>document.getElementById(f).value='');document.getElementById('f-wastewater').checked=true;currentPhotos=[];renderPhotoGrid();window.scrollTo(0,0)}
 
 function today(){return new Date().toISOString().split('T')[0]}
 
@@ -334,12 +385,15 @@ const sig=s.inspector?`Inspected by ${s.inspector}   ·   `:'';
 doc.text(`${sig}${s.bizName||''}   ·   ${s.phone||''}   ·   ${s.email||''}`,M,y);
 return doc}
 
+async function previewSavedPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();buildPDF(currentReport,s).output('dataurlnewwindow')}
 async function previewPDF(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();buildPDF(data,s).output('dataurlnewwindow')}
 async function exportPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();doc.save(`septic_${addr}.pdf`)}
-async function emailReport(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();const pdfBlob=doc.output('blob');const file=new File([pdfBlob],`septic_${addr}.pdf`,{type:'application/pdf'});try{if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:`Septic Inspection Report`,text:`Septic inspection report for ${currentReport.address||''}`});return}}catch(e){if(e.name==='AbortError')return}const url=URL.createObjectURL(pdfBlob);const a=document.createElement('a');a.href=url;a.download=`septic_${addr}.pdf`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('PDF downloaded — attach it to your email.')}
+async function emailReport(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();const file=new File([doc.output('blob')],`septic_${addr}.pdf`,{type:'application/pdf'});try{if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:`Septic Inspection Report — ${currentReport.address||''}`,text:`Hi,\n\nPlease find the septic inspection report for ${currentReport.address||''} dated ${currentReport.date?new Date(currentReport.date+'T00:00:00').toLocaleDateString('en-AU'):\'\'}. \n\nRegards,\n${s.inspector||s.bizName||''}`});return}}catch(e){if(e.name!=='AbortError'){const url=URL.createObjectURL(doc.output('blob'));const a=document.createElement('a');a.href=url;a.download=`septic_${addr}.pdf`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('PDF saved — attach to your email.')}}}
 
-async function editReport(){if(!currentReport)return;const r=currentReport;editingId=r.id;document.getElementById('f-date').value=r.date||today();document.getElementById('f-address').value=r.address||'';weatherSelected=r.weather?r.weather.split(', ').filter(Boolean):[];document.querySelectorAll('#weather-chips .chip').forEach(c=>{c.classList.toggle('selected',weatherSelected.includes(c.textContent))});document.getElementById('f-tanktype').value=r.tankType||'';document.getElementById('f-tanksize').value=r.tankSize||'';document.getElementById('f-boundary').value=r.boundary||'';document.getElementById('f-tankloc').value=r.tankLocation||'';document.getElementById('f-beds').value=r.beds||0;document.getElementById('f-showers').value=r.showers||0;document.getElementById('f-wcs').value=r.wcs||0;document.getElementById('f-basins').value=r.basins||0;document.getElementById('f-laundry').value=r.laundry||0;document.getElementById('f-kitchen').value=r.kitchen||0;document.getElementById('f-tank-notes').value=r.tankNotes||'';document.getElementById('f-trench-notes').value=r.trenchNotes||'';document.getElementById('f-repairs').value=r.repairs||'';document.getElementById('f-wastewater').checked=!!r.wastewater;currentPhotos=(r.photos||[]).map(p=>({dataUrl:p.dataUrl,caption:p.caption||''}));renderPhotoGrid();closeModal();showScreen('form');document.querySelector('.nav-tab').textContent='Editing…';window.scrollTo(0,0)}
-async function init(){await openDB();document.getElementById('f-date').value=today();const s=await getSettings();if(s.bizName)document.getElementById('biz-nav-name').textContent=s.bizName}
+async function editReport(){if(!currentReport)return;const r=currentReport;editingId=r.id;document.getElementById('f-date').value=r.date||today();document.getElementById('f-address').value=r.address||'';weatherSelected=r.weather?r.weather.split(', ').filter(Boolean):[];document.querySelectorAll('#weather-chips .chip').forEach(c=>{c.classList.toggle('selected',weatherSelected.includes(c.textContent))});document.getElementById('f-tanktype').value=r.tankType||'';document.getElementById('f-tanksize').value=r.tankSize||'';document.getElementById('f-boundary').value=r.boundary||'';document.getElementById('f-tankloc').value=r.tankLocation||'';document.getElementById('f-beds').value=r.beds||'';document.getElementById('f-showers').value=r.showers||'';document.getElementById('f-wcs').value=r.wcs||'';document.getElementById('f-basins').value=r.basins||'';document.getElementById('f-laundry').value=r.laundry||'';document.getElementById('f-kitchen').value=r.kitchen||'';document.getElementById('f-tank-notes').value=r.tankNotes||'';document.getElementById('f-trench-notes').value=r.trenchNotes||'';document.getElementById('f-repairs').value=r.repairs||'';document.getElementById('f-wastewater').checked=!!r.wastewater;currentPhotos=(r.photos||[]).map(p=>({dataUrl:p.dataUrl,caption:p.caption||''}));renderPhotoGrid();closeModal();showScreen('form');window.scrollTo(0,0)}
+function showSuccess(isUpdate=false){const el=document.getElementById('success-overlay');el.querySelector('.success-title').textContent=isUpdate?'Report updated':'Report saved';el.classList.add('show');setTimeout(()=>{el.classList.remove('show');showScreen('home')},1800)}
+async function seedDemoData(){const existing=await dbGetAll('reports');if(existing.length>0)return;const demoSettings={bizName:'Northern Rivers Septic Solutions',licence:'193926C',abn:'53 538 021 660',address:'38 Cedar Crescent, East Ballina NSW 2478',phone:'0402 901 033',email:'brettjonesplumbing@gmail.com',inspector:'Brett Jones'};await dbPut('reports',{date:'2026-06-10',address:'47 Bangalow Rd, Byron Bay NSW 2481',weather:'Sunny, Dry',tankType:'Primary / Concrete',tankSize:'1800L',boundary:'8m+',tankLocation:'Rear yard, 4m from back fence, left of shed',beds:'3',showers:'2',wcs:'2',basins:'2',laundry:'1',kitchen:'1',tankNotes:'Tank lid intact and accessible. Inlet baffle in good condition. Outlet baffle showing minor deterioration but functional. No signs of structural cracking. Scum layer within acceptable limits. Effluent level normal.',trenchNotes:'Land application area located along eastern boundary. Three trenches approximately 15m in length. No surface breakout observed. Grass coverage healthy and uniform. No ponding evident at time of inspection.',repairs:'Recommend replacement of outlet baffle within 12 months. No immediate action required. System functioning within acceptable parameters. Schedule follow-up inspection in 2 years.',wastewater:true,photos:[],settings:demoSettings,savedAt:new Date().toISOString()})}
+async function init(){await openDB();document.getElementById('f-date').value=today();const s=await getSettings();if(s.bizName)document.getElementById('biz-nav-name').textContent=s.bizName;await seedDemoData()}
 init();
 </script>
 </body>
