@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Septic">
@@ -12,143 +13,123 @@
 <title>Septic Inspection</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#f5f5f2;color:#1a1a18;font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#f5f5f2;color:#1a1a18;font-size:16px;-webkit-font-smoothing:antialiased}
 
-  .app{display:flex;flex-direction:column;min-height:100vh}
+#screen-home{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 24px;background:#f5f5f2}
+#screen-form,#screen-history,#screen-settings{display:none;padding:16px;max-width:780px;margin:0 auto;width:100%;padding-bottom:60px}
 
-  .nav{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.15);padding:0;display:flex;align-items:stretch;position:sticky;top:0;z-index:50}
-  .nav-brand{padding:14px 20px;font-weight:500;font-size:15px;color:#1a1a18;flex:1;min-width:0}
-  .nav-brand span{font-size:11px;color:#888;display:block;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .nav-tabs{display:flex;flex-shrink:0}
-  .nav-tab{padding:14px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;transition:color 0.15s;white-space:nowrap;font-family:inherit}
-  .nav-tab.active{color:#1a1a18;border-bottom-color:#1a1a18}
+.top-nav{display:none;background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.12);padding:0 4px;align-items:center;position:sticky;top:0;z-index:50;height:50px}
+.top-nav.visible{display:flex}
+.back-btn{padding:10px 14px;background:none;border:none;cursor:pointer;color:#888;font-size:13px;font-family:inherit;display:flex;align-items:center;gap:5px}
+.top-nav-title{flex:1;text-align:center;font-size:13px;font-weight:500;color:#1a1a18}
+.top-nav-spacer{width:80px}
 
-  .screen{display:none;padding:16px;max-width:780px;margin:0 auto;width:100%;padding-bottom:40px;min-height:calc(100vh - 50px)}
-  .screen.active{display:block}
+.home-logo{width:72px;height:72px;background:#1a1a18;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.home-title{font-size:22px;font-weight:500;color:#1a1a18;text-align:center;margin-bottom:6px;line-height:1.3}
+.home-sub{font-size:14px;color:#888;text-align:center;margin-bottom:48px}
+.home-actions{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
+.home-btn{width:100%;padding:18px 20px;border-radius:12px;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:14px;text-align:left;transition:opacity 0.15s}
+.home-btn:active{opacity:0.7}
+.home-btn-primary{background:#1a1a18;color:#fff;border:none}
+.home-btn-secondary{background:#fff;color:#1a1a18;border:0.5px solid rgba(0,0,0,0.15)}
+.home-btn span{flex:1}
+.home-btn-arrow{opacity:0.35;margin-left:auto;flex-shrink:0}
 
-  .card{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:18px;margin-bottom:14px}
-  .card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
+.card{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:18px;margin-bottom:14px}
+.card-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;color:#666;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:0.5px solid rgba(0,0,0,0.25);border-radius:8px;font-size:16px;background:#fff;color:#1a1a18;font-family:inherit;appearance:none;-webkit-appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+.field textarea{resize:vertical;min-height:90px;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:rgba(0,0,0,0.4);box-shadow:0 0 0 3px rgba(0,0,0,0.06)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-  .field{margin-bottom:14px}
-  .field:last-child{margin-bottom:0}
-  .field label{display:block;font-size:13px;color:#666;margin-bottom:5px}
-  .field input,.field select,.field textarea{width:100%;padding:11px 13px;border:0.5px solid rgba(0,0,0,0.25);border-radius:8px;font-size:16px;background:#fff;color:#1a1a18;font-family:inherit;appearance:none;-webkit-appearance:none}
-  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
-  .field textarea{resize:vertical;min-height:90px;line-height:1.55}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:rgba(0,0,0,0.4);box-shadow:0 0 0 3px rgba(0,0,0,0.06)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chip{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.25);background:transparent;color:#1a1a18;font-family:inherit}
+.chip.selected{background:#1a1a18;color:#fff;border-color:#1a1a18}
 
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
+.toggle{position:relative;width:46px;height:28px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;border-radius:14px;background:rgba(0,0,0,0.18);cursor:pointer;transition:background 0.2s}
+.toggle input:checked+.toggle-track{background:#34c759}
+.toggle-thumb{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform 0.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,0.25)}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px)}
 
-  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
-  .chip{padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.25);background:transparent;color:#1a1a18;font-family:inherit;transition:all 0.12s}
-  .chip.selected{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.fixture-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fixture-item label{font-size:12px;color:#666;display:block;margin-bottom:5px;text-align:center}
+.fixture-item input{width:100%;padding:10px;border:0.5px solid rgba(0,0,0,0.25);border-radius:8px;font-size:18px;text-align:center;background:#fff;color:#1a1a18;font-family:inherit}
 
-  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
-  .toggle{position:relative;width:46px;height:28px;flex-shrink:0}
-  .toggle input{opacity:0;width:0;height:0;position:absolute}
-  .toggle-track{position:absolute;inset:0;border-radius:14px;background:rgba(0,0,0,0.18);cursor:pointer;transition:background 0.2s}
-  .toggle input:checked+.toggle-track{background:#34c759}
-  .toggle-thumb{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform 0.2s;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,0.25)}
-  .toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+.photo-area{border:1.5px dashed rgba(0,0,0,0.2);border-radius:10px;padding:22px;text-align:center;cursor:pointer}
+.photo-area p{font-size:14px;color:#888;margin-top:8px}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}
+.photo-thumb{position:relative;border-radius:8px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.12)}
+.photo-thumb img{width:100%;height:110px;object-fit:cover;display:block}
+.photo-caption{padding:6px 8px;background:#fff}
+.photo-caption input{width:100%;border:none;border-top:0.5px solid rgba(0,0,0,0.1);font-size:12px;padding:5px 0;background:transparent;color:#1a1a18;font-family:inherit}
+.photo-caption input:focus{outline:none}
+.photo-remove{position:absolute;top:5px;right:5px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-  .fixture-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .fixture-item label{font-size:12px;color:#666;display:block;margin-bottom:5px;text-align:center}
-  .fixture-item input{width:100%;padding:10px;border:0.5px solid rgba(0,0,0,0.25);border-radius:8px;font-size:18px;text-align:center;background:#fff;color:#1a1a18;font-family:inherit}
+.btn{padding:14px 20px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:0.5px solid rgba(0,0,0,0.25);background:#fff;color:#1a1a18;font-family:inherit}
+.btn:active{opacity:0.7}
+.btn-primary{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.btn-danger{color:#a32d2d;border-color:#f09595}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 
-  .photo-area{border:1.5px dashed rgba(0,0,0,0.2);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:background 0.12s;user-select:none}
-  .photo-area:active{background:#f5f5f2}
-  .photo-area svg{margin:0 auto;display:block;opacity:0.35}
-  .photo-area p{font-size:14px;color:#888;margin-top:8px}
-  .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}
-  .photo-thumb{position:relative;border-radius:8px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.12)}
-  .photo-thumb img{width:100%;height:110px;object-fit:cover;display:block}
-  .photo-caption{padding:6px 8px;background:#fff}
-  .photo-caption input{width:100%;border:none;border-top:0.5px solid rgba(0,0,0,0.1);font-size:12px;padding:5px 0;background:transparent;color:#1a1a18;font-family:inherit}
-  .photo-caption input:focus{outline:none}
-  .photo-remove{position:absolute;top:5px;right:5px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-item{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:16px 18px;cursor:pointer}
+.history-item:active{opacity:0.7}
+.history-item-top{display:flex;justify-content:space-between;align-items:flex-start}
+.history-item h3{font-size:15px;font-weight:500;line-height:1.3}
+.history-item p{font-size:13px;color:#888;margin-top:3px}
+.history-date{font-size:12px;color:#aaa;white-space:nowrap;margin-left:12px;flex-shrink:0}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;margin-top:7px;font-weight:500}
+.badge-ok{background:#eaf3de;color:#3b6d11}
+.badge-repair{background:#faeeda;color:#854f0b}
+.empty-state{text-align:center;padding:60px 20px;color:#aaa}
+.empty-state p{margin-top:10px;font-size:14px}
+.section-header{margin-bottom:14px}
+.section-title{font-size:18px;font-weight:500}
+.settings-info{font-size:13px;color:#888;margin-bottom:16px;line-height:1.6}
 
-  .btn{padding:12px 20px;border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;border:0.5px solid rgba(0,0,0,0.25);background:#fff;color:#1a1a18;font-family:inherit;transition:background 0.12s}
-  .btn:active{background:#f0f0ec}
-  .btn-primary{background:#1a1a18;color:#fff;border-color:#1a1a18}
-  .btn-primary:active{background:#333}
-  .btn-danger{color:#a32d2d;border-color:#f09595;background:#fff}
-  .btn-danger:active{background:#fcebeb}
-  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;overflow-y:auto;padding:20px}
+.modal{background:#fff;border-radius:16px;padding:22px;max-width:520px;margin:0 auto}
+.modal h2{font-size:17px;font-weight:500;margin-bottom:14px}
+.modal-body{font-size:14px;line-height:1.7;color:#555}
+.modal-body b{color:#1a1a18;font-weight:500}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px;border-top:0.5px solid rgba(0,0,0,0.1);padding-top:16px}
 
-  .history-list{display:flex;flex-direction:column;gap:10px}
-  .history-item{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:16px 18px;cursor:pointer;transition:border-color 0.12s}
-  .history-item:active{background:#f9f9f6}
-  .history-item-top{display:flex;justify-content:space-between;align-items:flex-start}
-  .history-item h3{font-size:15px;font-weight:500;line-height:1.3}
-  .history-item p{font-size:13px;color:#888;margin-top:3px}
-  .history-date{font-size:12px;color:#aaa;white-space:nowrap;margin-left:12px;flex-shrink:0}
-  .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;margin-top:7px;font-weight:500}
-  .badge-ok{background:#eaf3de;color:#3b6d11}
-  .badge-repair{background:#faeeda;color:#854f0b}
+.success-screen{display:none;position:fixed;inset:0;background:#fff;z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.success-tick{width:80px;height:80px;background:#eaf3de;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.success-title{font-size:20px;font-weight:500;color:#1a1a18}
+.success-sub{font-size:14px;color:#888}
 
-  .empty-state{text-align:center;padding:60px 20px;color:#aaa}
-  .empty-state svg{margin:0 auto;display:block;opacity:0.3}
-  .empty-state p{margin-top:10px;font-size:14px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;opacity:0;transition:all 0.3s;z-index:300;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  .settings-info{font-size:13px;color:#888;margin-bottom:16px;line-height:1.6}
-
-  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-  .section-title{font-size:18px;font-weight:500}
-
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;overflow-y:auto;padding:20px;pointer-events:none}
-  .modal-bg.open{display:block;pointer-events:all}
-  .modal{background:#fff;border-radius:16px;padding:22px;max-width:520px;margin:0 auto}
-  .modal h2{font-size:17px;font-weight:500;margin-bottom:14px}
-  .modal-body{font-size:14px;line-height:1.7;color:#555}
-  .modal-body b{color:#1a1a18;font-weight:500}
-  .modal-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px;border-top:0.5px solid rgba(0,0,0,0.1);padding-top:16px}
-
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#fff;padding:10px 20px;border-radius:20px;font-size:14px;opacity:0;transition:all 0.3s;z-index:200;white-space:nowrap}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-  .home-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:#f5f5f2}
-  .screen.active.home-screen{display:flex}
-  .home-logo{width:72px;height:72px;background:#1a1a18;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
-  .home-logo svg{opacity:0.9}
-  .home-title{font-size:22px;font-weight:500;color:#1a1a18;text-align:center;margin-bottom:6px}
-  .home-sub{font-size:14px;color:#888;text-align:center;margin-bottom:48px}
-  .home-actions{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
-  .home-btn{width:100%;padding:18px 24px;border-radius:12px;font-size:16px;font-weight:500;cursor:pointer;border:none;font-family:inherit;display:flex;align-items:center;gap:14px;transition:opacity 0.15s}
-  .home-btn:active{opacity:0.8}
-  .home-btn-primary{background:#1a1a18;color:#fff}
-  .home-btn-secondary{background:#fff;color:#1a1a18;border:0.5px solid rgba(0,0,0,0.15)}
-  .home-btn svg{flex-shrink:0;opacity:0.7}
-  .home-btn span{flex:1;text-align:left}
-  .home-btn-arrow{opacity:0.4;margin-left:auto}
-  .success-overlay{display:none;position:fixed;inset:0;background:#fff;z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none}
-  .success-overlay.show{display:flex;pointer-events:all}
-  .success-tick{width:80px;height:80px;background:#eaf3de;border-radius:50%;display:flex;align-items:center;justify-content:center}
-  .success-title{font-size:20px;font-weight:500;color:#1a1a18}
-  .success-sub{font-size:14px;color:#888}
-  @media(max-width:500px){
-    .field-row{grid-template-columns:1fr}
-    .fixture-grid{grid-template-columns:repeat(3,1fr)}
-    .nav-brand span{display:none}
-    .nav-tab{padding:14px 11px;font-size:12px}
-    .btn-row{flex-direction:column}
-    .btn-row .btn{width:100%;text-align:center}
-  }
+@media(max-width:500px){
+  .field-row{grid-template-columns:1fr}
+  .btn-row{flex-direction:column}
+  .btn-row .btn{width:100%;text-align:center}
+}
 </style>
 </head>
 <body>
-<div class="app">
 
-<nav class="nav" id="main-nav" style="display:none">
-  <button onclick="showScreen('home')" style="padding:14px 16px;background:none;border:none;cursor:pointer;color:#888;font-size:13px;font-family:inherit;display:flex;align-items:center;gap:6px">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>Home
+<nav class="top-nav" id="top-nav">
+  <button class="back-btn" onclick="goHome()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+    Home
   </button>
-  <div class="nav-brand" style="flex:1;text-align:center;padding:14px 0"><span id="biz-nav-name" style="font-size:13px;font-weight:500;color:#1a1a18;display:block">Northern Rivers Septic Solutions</span></div>
-  <div style="width:80px"></div>
+  <div class="top-nav-title" id="nav-title">Northern Rivers Septic Solutions</div>
+  <div class="top-nav-spacer"></div>
 </nav>
 
-<!-- NEW REPORT -->
-<div id="screen-home" class="home-screen screen active">
+<!-- HOME -->
+<div id="screen-home">
   <div class="home-logo">
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -158,14 +139,26 @@
   <div class="home-title">Northern Rivers<br>Septic Solutions</div>
   <div class="home-sub">Inspection Reports</div>
   <div class="home-actions">
-    <button class="home-btn home-btn-primary" onclick="showScreen('form')" type="button">New inspection</button>
-    <button class="home-btn home-btn-secondary" onclick="showScreen('history')" type="button">Past inspections</button>
-    <button class="home-btn home-btn-secondary" onclick="showScreen('settings')" type="button">Settings</button>
+    <button class="home-btn home-btn-primary" onclick="goTo('form')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      <span>New inspection</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+    <button class="home-btn home-btn-secondary" onclick="goTo('history')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      <span>Past inspections</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+    <button class="home-btn home-btn-secondary" onclick="goTo('settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings</span>
+      <svg class="home-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
   </div>
 </div>
 
-<div id="screen-form" class="screen">
-
+<!-- NEW REPORT -->
+<div id="screen-form">
   <div class="card">
     <div class="card-title">Inspection details</div>
     <div class="field-row">
@@ -207,12 +200,12 @@
   <div class="card">
     <div class="card-title">Fixtures serviced</div>
     <div class="fixture-grid">
-      <div class="fixture-item"><label>Bedrooms</label><input type="number" id="f-beds" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
-      <div class="fixture-item"><label>Showers</label><input type="number" id="f-showers" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
-      <div class="fixture-item"><label>WCs</label><input type="number" id="f-wcs" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
-      <div class="fixture-item"><label>Basins</label><input type="number" id="f-basins" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
-      <div class="fixture-item"><label>Laundry</label><input type="number" id="f-laundry" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
-      <div class="fixture-item"><label>Kitchen sinks</label><input type="number" id="f-kitchen" min="0" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+      <div class="fixture-item"><label>Bedrooms</label><input type="number" id="f-beds" min="0" inputmode="numeric" pattern="[0-9]*"></div>
+      <div class="fixture-item"><label>Showers</label><input type="number" id="f-showers" min="0" inputmode="numeric" pattern="[0-9]*"></div>
+      <div class="fixture-item"><label>WCs</label><input type="number" id="f-wcs" min="0" inputmode="numeric" pattern="[0-9]*"></div>
+      <div class="fixture-item"><label>Basins</label><input type="number" id="f-basins" min="0" inputmode="numeric" pattern="[0-9]*"></div>
+      <div class="fixture-item"><label>Laundry</label><input type="number" id="f-laundry" min="0" inputmode="numeric" pattern="[0-9]*"></div>
+      <div class="fixture-item"><label>Kitchen sinks</label><input type="number" id="f-kitchen" min="0" inputmode="numeric" pattern="[0-9]*"></div>
     </div>
   </div>
 
@@ -237,7 +230,7 @@
     <div class="card-title">Photos</div>
     <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="addPhotos(event)">
     <div class="photo-area" onclick="document.getElementById('photo-input').click()">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto;display:block;opacity:0.35"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/><path d="M8 6l1.5-2h5L16 6"/></svg>
       <p>Tap to add photos from camera or library</p>
     </div>
     <div class="photo-grid" id="photo-grid"></div>
@@ -251,15 +244,13 @@
 </div>
 
 <!-- HISTORY -->
-<div id="screen-history" class="screen">
-  <div class="section-header">
-    <div class="section-title">Past inspections</div>
-  </div>
+<div id="screen-history">
+  <div class="section-header"><div class="section-title">Past inspections</div></div>
   <div class="history-list" id="history-list"></div>
 </div>
 
 <!-- SETTINGS -->
-<div id="screen-settings" class="screen">
+<div id="screen-settings">
   <div class="card">
     <div class="card-title">Business details</div>
     <p class="settings-info">Entered once — auto-fills every report.</p>
@@ -284,7 +275,9 @@
     <h2 id="modal-title">Inspection report</h2>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-actions">
-      <button class="btn btn-danger" onclick="deleteReport()">Delete</button><button class="btn" onclick="editReport()">Edit</button><button class="btn" onclick="previewSavedPDF()">Preview PDF</button>
+      <button class="btn btn-danger" onclick="deleteReport()">Delete</button>
+      <button class="btn" onclick="editReport()">Edit</button>
+      <button class="btn" onclick="previewSavedPDF()">Preview PDF</button>
       <button class="btn" onclick="emailReport()">Email PDF</button>
       <button class="btn btn-primary" onclick="exportPDF()">Download PDF</button>
       <button class="btn" onclick="closeModal()">Close</button>
@@ -292,17 +285,19 @@
   </div>
 </div>
 
-<div class="success-overlay" id="success-overlay">
-  <div class="success-tick"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b6d11" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg></div>
-  <div class="success-title">Report saved</div>
+<!-- SUCCESS -->
+<div class="success-screen" id="success-screen">
+  <div class="success-tick">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b6d11" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+  </div>
+  <div class="success-title" id="success-title">Report saved</div>
   <div class="success-sub">Added to your inspection history</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-</div>
 <script>
-const DB_NAME='SepticApp';const DB_VER=1;let db;let currentPhotos=[];let currentReport=null;let weatherSelected=[];
+const DB_NAME='SepticApp';const DB_VER=1;let db;let currentPhotos=[];let currentReport=null;let weatherSelected=[];let editingId=null;
 
 function openDB(){return new Promise((res,rej)=>{const req=indexedDB.open(DB_NAME,DB_VER);req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('reports'))d.createObjectStore('reports',{keyPath:'id',autoIncrement:true});if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'key'})};req.onsuccess=e=>{db=e.target.result;res()};req.onerror=rej})}
 function dbPut(s,v){return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');const r=tx.objectStore(s).put(v);r.onsuccess=()=>res(r.result);r.onerror=rej})}
@@ -310,7 +305,26 @@ function dbGet(s,k){return new Promise((res,rej)=>{const tx=db.transaction(s,'re
 function dbGetAll(s){return new Promise((res,rej)=>{const tx=db.transaction(s,'readonly');const r=tx.objectStore(s).getAll();r.onsuccess=()=>res(r.result);r.onerror=rej})}
 function dbDelete(s,k){return new Promise((res,rej)=>{const tx=db.transaction(s,'readwrite');const r=tx.objectStore(s).delete(k);r.onsuccess=res;r.onerror=rej})}
 
-function showScreen(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+name).classList.add('active');const nav=document.getElementById('main-nav');nav.style.display=name==='home'?'none':'flex';if(name==='history')loadHistory();if(name==='settings')loadSettingsUI();window.scrollTo(0,0)}
+function goTo(name){
+  document.getElementById('screen-home').style.display='none';
+  document.getElementById('screen-form').style.display='none';
+  document.getElementById('screen-history').style.display='none';
+  document.getElementById('screen-settings').style.display='none';
+  document.getElementById('screen-'+name).style.display='block';
+  document.getElementById('top-nav').className='top-nav visible';
+  if(name==='history')loadHistory();
+  if(name==='settings')loadSettingsUI();
+  window.scrollTo(0,0);
+}
+
+function goHome(){
+  document.getElementById('screen-form').style.display='none';
+  document.getElementById('screen-history').style.display='none';
+  document.getElementById('screen-settings').style.display='none';
+  document.getElementById('screen-home').style.display='flex';
+  document.getElementById('top-nav').className='top-nav';
+  window.scrollTo(0,0);
+}
 
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 
@@ -322,27 +336,30 @@ function removePhoto(i){currentPhotos.splice(i,1);renderPhotoGrid()}
 
 function getFormData(){return{date:document.getElementById('f-date').value,address:document.getElementById('f-address').value,weather:weatherSelected.join(', '),tankType:document.getElementById('f-tanktype').value,tankSize:document.getElementById('f-tanksize').value,boundary:document.getElementById('f-boundary').value,tankLocation:document.getElementById('f-tankloc').value,beds:document.getElementById('f-beds').value,showers:document.getElementById('f-showers').value,wcs:document.getElementById('f-wcs').value,basins:document.getElementById('f-basins').value,laundry:document.getElementById('f-laundry').value,kitchen:document.getElementById('f-kitchen').value,tankNotes:document.getElementById('f-tank-notes').value,trenchNotes:document.getElementById('f-trench-notes').value,repairs:document.getElementById('f-repairs').value,wastewater:document.getElementById('f-wastewater').checked,photos:currentPhotos.map(p=>({dataUrl:p.dataUrl,caption:p.caption}))}}
 
-let editingId=null;
-async function saveReport(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();if(editingId){await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString(),id:editingId});showSuccess(true);editingId=null;}else{await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString()});showSuccess();}clearForm()}
+async function saveReport(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();if(editingId){await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString(),id:editingId});showSuccess(true);editingId=null}else{await dbPut('reports',{...data,settings:s,savedAt:new Date().toISOString()});showSuccess(false)}clearForm()}
 
-function clearForm(){editingId=null;document.getElementById('f-date').value=today();document.getElementById('f-address').value='';weatherSelected=[];document.querySelectorAll('#weather-chips .chip').forEach(c=>c.classList.remove('selected'));document.getElementById('f-tanktype').value='';document.getElementById('f-tanksize').value='';document.getElementById('f-boundary').value='';document.getElementById('f-tankloc').value='';['beds','showers','wcs','basins','laundry','kitchen'].forEach(f=>document.getElementById('f-'+f).value='0');['f-tank-notes','f-trench-notes','f-repairs'].forEach(f=>document.getElementById(f).value='');document.getElementById('f-wastewater').checked=true;currentPhotos=[];renderPhotoGrid();window.scrollTo(0,0)}
+function clearForm(){editingId=null;document.getElementById('f-date').value=today();document.getElementById('f-address').value='';weatherSelected=[];document.querySelectorAll('#weather-chips .chip').forEach(c=>c.classList.remove('selected'));document.getElementById('f-tanktype').value='';document.getElementById('f-tanksize').value='';document.getElementById('f-boundary').value='';document.getElementById('f-tankloc').value='';['f-beds','f-showers','f-wcs','f-basins','f-laundry','f-kitchen'].forEach(f=>document.getElementById(f).value='');['f-tank-notes','f-trench-notes','f-repairs'].forEach(f=>document.getElementById(f).value='');document.getElementById('f-wastewater').checked=true;currentPhotos=[];renderPhotoGrid()}
 
 function today(){return new Date().toISOString().split('T')[0]}
 
+function showSuccess(isUpdate){const el=document.getElementById('success-screen');document.getElementById('success-title').textContent=isUpdate?'Report updated':'Report saved';el.style.display='flex';setTimeout(()=>{el.style.display='none';goHome()},1800)}
+
 async function getSettings(){const s=await dbGet('settings','biz');return s?s.data:{bizName:'Northern Rivers Septic Solutions',licence:'193926C',abn:'53 538 021 660',address:'38 Cedar Crescent, East Ballina NSW 2478',phone:'0402 901 033',email:'brettjonesplumbing@gmail.com',inspector:''}}
 
-async function saveSettings(){const data={bizName:document.getElementById('s-bizname').value,licence:document.getElementById('s-licence').value,abn:document.getElementById('s-abn').value,address:document.getElementById('s-address').value,phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,inspector:document.getElementById('s-inspector').value};await dbPut('settings',{key:'biz',data});document.getElementById('biz-nav-name').textContent=data.bizName||'Northern Rivers Septic Solutions';toast('Settings saved.')}
+async function saveSettings(){const data={bizName:document.getElementById('s-bizname').value,licence:document.getElementById('s-licence').value,abn:document.getElementById('s-abn').value,address:document.getElementById('s-address').value,phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,inspector:document.getElementById('s-inspector').value};await dbPut('settings',{key:'biz',data});toast('Settings saved.')}
 
 async function loadSettingsUI(){const s=await getSettings();document.getElementById('s-bizname').value=s.bizName||'';document.getElementById('s-licence').value=s.licence||'';document.getElementById('s-abn').value=s.abn||'';document.getElementById('s-address').value=s.address||'';document.getElementById('s-phone').value=s.phone||'';document.getElementById('s-email').value=s.email||'';document.getElementById('s-inspector').value=s.inspector||''}
 
-async function loadHistory(){const reports=await dbGetAll('reports');const list=document.getElementById('history-list');if(!reports.length){list.innerHTML='<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg><p>No reports saved yet.</p></div>';return}reports.sort((a,b)=>b.id-a.id);list.innerHTML=reports.map(r=>{const d=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'No date';const fix=r.repairs&&r.repairs.trim().length>3;return`<div class="history-item" onclick="viewReport(${r.id})"><div class="history-item-top"><div><h3>${r.address||'Unknown address'}</h3><p>${r.tankType||'Tank type not recorded'}</p><span class="badge ${fix?'badge-repair':'badge-ok'}">${fix?'Repairs noted':'Satisfactory'}</span></div><span class="history-date">${d}</span></div></div>`}).join('')}
+async function loadHistory(){const reports=await dbGetAll('reports');const list=document.getElementById('history-list');if(!reports.length){list.innerHTML='<div class="empty-state"><p>No reports saved yet.</p></div>';return}reports.sort((a,b)=>b.id-a.id);list.innerHTML=reports.map(r=>{const d=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'No date';const fix=r.repairs&&r.repairs.trim().length>3;return`<div class="history-item" onclick="viewReport(${r.id})"><div class="history-item-top"><div><h3>${r.address||'Unknown address'}</h3><p>${r.tankType||'Tank type not recorded'}</p><span class="badge ${fix?'badge-repair':'badge-ok'}">${fix?'Repairs noted':'Satisfactory'}</span></div><span class="history-date">${d}</span></div></div>`}).join('')}
 
-async function viewReport(id){currentReport=await dbGet('reports',id);if(!currentReport)return;const r=currentReport;const d=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}):'';const fx=`${r.beds||0} bed, ${r.showers||0} shower, ${r.wcs||0} WC, ${r.basins||0} basin, ${r.laundry||0} laundry, ${r.kitchen||0} kitchen`;document.getElementById('modal-title').textContent=r.address||'Inspection';document.getElementById('modal-body').innerHTML=`<div style="display:grid;gap:9px"><p><b>Date:</b> ${d}</p><p><b>Weather:</b> ${r.weather||'—'}</p><p><b>Tank type:</b> ${r.tankType||'—'}</p><p><b>Tank size:</b> ${r.tankSize||'—'}</p><p><b>Fixtures:</b> ${fx}</p><p><b>Boundary distance:</b> ${r.boundary||'—'}</p><p><b>Tank location:</b> ${r.tankLocation||'—'}</p><p><b>Tank condition:</b> ${r.tankNotes||'—'}</p><p><b>Trench/land application:</b> ${r.trenchNotes||'—'}</p><p><b>Repairs/recommendations:</b> ${r.repairs||'—'}</p><p><b>All wastewater to septic:</b> ${r.wastewater?'Yes':'No'}</p>${r.photos&&r.photos.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:4px">${r.photos.map(p=>`<div><img src="${p.dataUrl}" style="width:100%;height:70px;object-fit:cover;border-radius:6px;display:block"><p style="font-size:11px;color:#888;margin-top:3px">${p.caption||''}</p></div>`).join('')}</div>`:''}</div>`;document.getElementById('modal-report').classList.add('open')}
+async function viewReport(id){currentReport=await dbGet('reports',id);if(!currentReport)return;const r=currentReport;const d=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}):'';const fx=`${r.beds||0} bed, ${r.showers||0} shower, ${r.wcs||0} WC, ${r.basins||0} basin, ${r.laundry||0} laundry, ${r.kitchen||0} kitchen`;document.getElementById('modal-title').textContent=r.address||'Inspection';document.getElementById('modal-body').innerHTML=`<div style="display:grid;gap:9px"><p><b>Date:</b> ${d}</p><p><b>Weather:</b> ${r.weather||'—'}</p><p><b>Tank type:</b> ${r.tankType||'—'}</p><p><b>Tank size:</b> ${r.tankSize||'—'}</p><p><b>Fixtures:</b> ${fx}</p><p><b>Boundary distance:</b> ${r.boundary||'—'}</p><p><b>Tank location:</b> ${r.tankLocation||'—'}</p><p><b>Tank condition:</b> ${r.tankNotes||'—'}</p><p><b>Trench/land application:</b> ${r.trenchNotes||'—'}</p><p><b>Repairs/recommendations:</b> ${r.repairs||'—'}</p><p><b>All wastewater to septic:</b> ${r.wastewater?'Yes':'No'}</p>${r.photos&&r.photos.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:4px">${r.photos.map(p=>`<div><img src="${p.dataUrl}" style="width:100%;height:70px;object-fit:cover;border-radius:6px;display:block"><p style="font-size:11px;color:#888;margin-top:3px">${p.caption||''}</p></div>`).join('')}</div>`:''}</div>`;document.getElementById('modal-report').style.display='block'}
 
 function handleModalBgClick(e){if(e.target===document.getElementById('modal-report'))closeModal()}
-function closeModal(){document.getElementById('modal-report').classList.remove('open');currentReport=null}
+function closeModal(){document.getElementById('modal-report').style.display='none';currentReport=null}
 
 async function deleteReport(){if(!currentReport)return;if(!confirm('Delete this report? This cannot be undone.'))return;await dbDelete('reports',currentReport.id);closeModal();loadHistory();toast('Report deleted.')}
+
+async function editReport(){if(!currentReport)return;const r=currentReport;editingId=r.id;document.getElementById('f-date').value=r.date||today();document.getElementById('f-address').value=r.address||'';weatherSelected=r.weather?r.weather.split(', ').filter(Boolean):[];document.querySelectorAll('#weather-chips .chip').forEach(c=>{c.classList.toggle('selected',weatherSelected.includes(c.textContent))});document.getElementById('f-tanktype').value=r.tankType||'';document.getElementById('f-tanksize').value=r.tankSize||'';document.getElementById('f-boundary').value=r.boundary||'';document.getElementById('f-tankloc').value=r.tankLocation||'';document.getElementById('f-beds').value=r.beds||'';document.getElementById('f-showers').value=r.showers||'';document.getElementById('f-wcs').value=r.wcs||'';document.getElementById('f-basins').value=r.basins||'';document.getElementById('f-laundry').value=r.laundry||'';document.getElementById('f-kitchen').value=r.kitchen||'';document.getElementById('f-tank-notes').value=r.tankNotes||'';document.getElementById('f-trench-notes').value=r.trenchNotes||'';document.getElementById('f-repairs').value=r.repairs||'';document.getElementById('f-wastewater').checked=!!r.wastewater;currentPhotos=(r.photos||[]).map(p=>({dataUrl:p.dataUrl,caption:p.caption||''}));renderPhotoGrid();closeModal();goTo('form');window.scrollTo(0,0)}
 
 function buildPDF(r,s){const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const W=210,M=18,CW=W-M*2;let y=M;
 const chk=(n=15)=>{if(y+n>282){doc.addPage();y=M}};
@@ -350,7 +367,6 @@ const row=(label,val,wrap)=>{chk(12);doc.setFontSize(9);doc.setFont('helvetica',
 const section=(title,text)=>{chk(22);ln(3);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(120,120,116);doc.text(title.toUpperCase(),M,y);ln(5);doc.setFont('helvetica','normal');doc.setTextColor(40,40,36);doc.setFontSize(10);const lines=doc.splitTextToSize(text||'—',CW);doc.text(lines,M,y);y+=lines.length*5+4};
 const ln=(h=5)=>{y+=h};
 const rule=()=>{doc.setDrawColor(220,220,215);doc.line(M,y,W-M,y);ln(6)};
-
 doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(26,26,24);doc.text(s.bizName||'Septic Inspection',M,y);ln(7);
 doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(110,110,106);
 const det=[];if(s.licence)det.push(`Lic. ${s.licence}`);if(s.abn)det.push(`ABN ${s.abn}`);if(s.phone)det.push(s.phone);if(s.email)det.push(s.email);
@@ -367,28 +383,26 @@ section('Repairs & recommendations',r.repairs);
 chk(10);ln(2);row('Wastewater confirmed',r.wastewater?'Yes — all fixtures directed to septic system':'No — not confirmed');
 if(r.photos&&r.photos.length){ln(4);rule();doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,26,24);doc.text('Photos',M,y);ln(7);
 const pW=54,pH=40,gap=5;let px=M,gy=y;
-r.photos.forEach((p,i)=>{chk(pH+16);try{doc.addImage(p.dataUrl,'JPEG',px,gy,pW,pH);if(p.caption){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(120,120,116);doc.text(p.caption,px,gy+pH+4,{maxWidth:pW})}px+=pW+gap;if(px+pW>W-M){px=M;gy+=pH+16;y=gy}}catch(e){}});y=gy+pH+16}
+r.photos.forEach((p)=>{chk(pH+16);try{doc.addImage(p.dataUrl,'JPEG',px,gy,pW,pH);if(p.caption){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(120,120,116);doc.text(p.caption,px,gy+pH+4,{maxWidth:pW})}px+=pW+gap;if(px+pW>W-M){px=M;gy+=pH+16;y=gy}}catch(e){}});y=gy+pH+16}
 ln(8);rule();
 doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(150,150,146);
 const sig=s.inspector?`Inspected by ${s.inspector}   ·   `:'';
 doc.text(`${sig}${s.bizName||''}   ·   ${s.phone||''}   ·   ${s.email||''}`,M,y);
 return doc}
 
-async function previewSavedPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();buildPDF(currentReport,s).output('dataurlnewwindow')}
 async function previewPDF(){const data=getFormData();if(!data.address){toast('Please enter a property address.');return}const s=await getSettings();buildPDF(data,s).output('dataurlnewwindow')}
+async function previewSavedPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();buildPDF(currentReport,s).output('dataurlnewwindow')}
 async function exportPDF(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();doc.save(`septic_${addr}.pdf`)}
 async function emailReport(){if(!currentReport)return;const s=currentReport.settings||await getSettings();const doc=buildPDF(currentReport,s);const addr=(currentReport.address||'report').replace(/[^a-z0-9]/gi,'_').toLowerCase();const pdfBlob=doc.output('blob');const file=new File([pdfBlob],`septic_${addr}.pdf`,{type:'application/pdf'});try{if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Septic Inspection Report',text:'Please find attached the septic inspection report.'});return}}catch(e){if(e.name==='AbortError')return}const url=URL.createObjectURL(pdfBlob);const a=document.createElement('a');a.href=url;a.download=`septic_${addr}.pdf`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('PDF saved — attach to your email.')}
 
-async function editReport(){if(!currentReport)return;const r=currentReport;editingId=r.id;document.getElementById('f-date').value=r.date||today();document.getElementById('f-address').value=r.address||'';weatherSelected=r.weather?r.weather.split(', ').filter(Boolean):[];document.querySelectorAll('#weather-chips .chip').forEach(c=>{c.classList.toggle('selected',weatherSelected.includes(c.textContent))});document.getElementById('f-tanktype').value=r.tankType||'';document.getElementById('f-tanksize').value=r.tankSize||'';document.getElementById('f-boundary').value=r.boundary||'';document.getElementById('f-tankloc').value=r.tankLocation||'';document.getElementById('f-beds').value=r.beds||'';document.getElementById('f-showers').value=r.showers||'';document.getElementById('f-wcs').value=r.wcs||'';document.getElementById('f-basins').value=r.basins||'';document.getElementById('f-laundry').value=r.laundry||'';document.getElementById('f-kitchen').value=r.kitchen||'';document.getElementById('f-tank-notes').value=r.tankNotes||'';document.getElementById('f-trench-notes').value=r.trenchNotes||'';document.getElementById('f-repairs').value=r.repairs||'';document.getElementById('f-wastewater').checked=!!r.wastewater;currentPhotos=(r.photos||[]).map(p=>({dataUrl:p.dataUrl,caption:p.caption||''}));renderPhotoGrid();closeModal();showScreen('form');window.scrollTo(0,0)}
-function showSuccess(isUpdate=false){const el=document.getElementById('success-overlay');el.querySelector('.success-title').textContent=isUpdate?'Report updated':'Report saved';el.classList.add('show');setTimeout(()=>{el.classList.remove('show');showScreen('home')},1800)}
 async function seedDemoData(){const existing=await dbGetAll('reports');if(existing.length>0)return;const demoSettings={bizName:'Northern Rivers Septic Solutions',licence:'193926C',abn:'53 538 021 660',address:'38 Cedar Crescent, East Ballina NSW 2478',phone:'0402 901 033',email:'brettjonesplumbing@gmail.com',inspector:'Brett Jones'};await dbPut('reports',{date:'2026-06-10',address:'47 Bangalow Rd, Byron Bay NSW 2481',weather:'Sunny, Dry',tankType:'Primary / Concrete',tankSize:'1800L',boundary:'8m+',tankLocation:'Rear yard, 4m from back fence, left of shed',beds:'3',showers:'2',wcs:'2',basins:'2',laundry:'1',kitchen:'1',tankNotes:'Tank lid intact and accessible. Inlet baffle in good condition. Outlet baffle showing minor deterioration but functional. No signs of structural cracking. Scum layer within acceptable limits. Effluent level normal.',trenchNotes:'Land application area located along eastern boundary. Three trenches approximately 15m in length. No surface breakout observed. Grass coverage healthy and uniform. No ponding evident at time of inspection.',repairs:'Recommend replacement of outlet baffle within 12 months. No immediate action required. System functioning within acceptable parameters. Schedule follow-up inspection in 2 years.',wastewater:true,photos:[],settings:demoSettings,savedAt:new Date().toISOString()})}
+
 async function init(){
-  try{await openDB()}catch(e){console.error('DB error',e)}
+  try{await openDB()}catch(e){console.error('DB',e)}
   document.getElementById('f-date').value=today();
-  try{const s=await getSettings();if(s&&s.bizName)document.getElementById('biz-nav-name').textContent=s.bizName}catch(e){}
-  try{await seedDemoData()}catch(e){console.error('Seed error',e)}
+  try{await seedDemoData()}catch(e){}
 }
-document.addEventListener('DOMContentLoaded',()=>init());
+init();
 </script>
 </body>
 </html>
